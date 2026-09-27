@@ -334,13 +334,13 @@ input[type=date]::-webkit-calendar-picker-indicator{opacity:.6}
 </head>
 <body>
 <div class="bgfx" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
-<div id="app"><aside class="side" id="side"></aside><main id="main"><div style="padding:48px 8px;text-align:center;color:#8a8a8e;font:15px/1.5 -apple-system,system-ui,sans-serif"><div style="font-weight:800;color:#5856d6;font-size:20px">Sprint99</div><p>Loading your plan…</p><p style="font-size:13px;max-width:340px;margin:0 auto">Stuck on this screen? The viewer you’re using can’t run apps (for example, the iPhone Files preview). Open it in a browser or inside the Claude app instead.</p></div><noscript><p style="text-align:center">JavaScript is turned off, so the planner can’t run here.</p></noscript></main></div>
+<div id="app"><aside class="side" id="side"></aside><main id="main"><div style="padding:48px 8px;text-align:center;color:#8a8a8e;font:15px/1.5 -apple-system,system-ui,sans-serif"><div style="font-weight:800;color:#5856d6;font-size:20px">Sprint99</div><p>Loading your plan…</p><p style="font-size:13px;max-width:340px;margin:0 auto">Stuck on this screen? The viewer you’re using can’t run apps (for example, the iPhone Files preview). Open it in a browser such as Safari or Chrome.</p></div><noscript><p style="text-align:center">JavaScript is turned off, so the planner can’t run here.</p></noscript></main></div>
 <button id="mini" class="mini" data-act="pomoOpen" hidden></button>
 <div id="sheet" class="sheet hidden" role="dialog" aria-modal="true"><div class="sheet-bg" data-act="close"></div><div class="sheet-card" id="sheetCard"></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <input type="file" id="restoreInput" accept=".json,application/json" hidden>
 <script>
-function __showErr(m){try{var b=document.getElementById('errbar');if(!b){b=document.createElement('div');b.id='errbar';b.style.cssText='position:fixed;left:12px;right:12px;top:12px;z-index:99;background:#ff3b30;color:#fff;padding:12px 14px;border-radius:14px;font:600 13px/1.4 -apple-system,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25)';document.body.appendChild(b)}b.textContent='Something went wrong: '+m+' — send this message to Claude.'}catch(e){}}
+function __showErr(m){try{console.error(m);if(m==='Script error.'||document.getElementById('errbar'))return;var b=document.createElement('div');b.id='errbar';b.setAttribute('role','alert');b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom));z-index:99;width:max-content;max-width:92vw;background:rgba(28,28,30,.94);color:#fff;padding:10px 10px 10px 16px;border-radius:16px;font:600 14px/1.4 -apple-system,system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;gap:12px;align-items:center';b.innerHTML='<span>Something didn’t load right. Your work is saved.</span><button style="font:inherit;background:#fff;color:#000;border:0;border-radius:999px;padding:7px 14px;cursor:pointer" onclick="location.reload()">Reload</button><button aria-label="Dismiss" style="font:inherit;background:none;color:#fff;border:0;cursor:pointer;opacity:.7;padding:4px 6px" onclick="this.parentNode.remove()">✕</button>';document.body.appendChild(b)}catch(e){}}
 window.addEventListener('error',function(e){__showErr(e.message||'Unknown error')});
 window.addEventListener('unhandledrejection',function(e){var r=e.reason;__showErr(String(r&&r.message?r.message:r))});
 (function(){try{var c=document.createElement('canvas');c.width=c.height=180;var x=c.getContext('2d'),g=x.createLinearGradient(0,0,180,180);g.addColorStop(0,'#5856d6');g.addColorStop(.55,'#af52de');g.addColorStop(1,'#ff2d55');x.fillStyle=g;x.fillRect(0,0,180,180);x.fillStyle='#fff';x.font='800 86px -apple-system,Helvetica,Arial,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('99',90,96);var u=c.toDataURL('image/png');
@@ -599,7 +599,7 @@ let EF={sec:'qa',topic:'',type:'concept',note:''},DF={sec:'qa',topic:'',att:'',c
 const BASE_TITLE=document.title;
 Kit.getState=()=>S;
 Kit.onStatus=()=>{const el=$('#saveState');if(el)el.textContent=saveText()};
-function storeText(){const k=Kit.store&&Kit.store.kind;return k==='claude'?'Your progress saves automatically in Claude, in your account.':k==='IndexedDB'?'Your progress saves automatically on this device, in this browser. No account needed.':'This browser isn’t letting Sprint99 save, so your data lasts only for this visit. Download a backup before closing.'}
+function storeText(){const k=Kit.store&&Kit.store.kind;return k==='claude'?'Your progress saves automatically and stays private to you.':k==='IndexedDB'?'Your progress saves automatically on this device, in this browser. No account needed.':'This browser isn’t letting Sprint99 save, so your data lasts only for this visit. Download a backup before closing.'}
 function saveText(){const st=Kit.status;if(!Kit.store||Kit.store.kind==='memory')return 'Not saving here · download a backup';if(st.error)return 'Save problem · download a backup';if(Kit.pending)return 'Saving…';return st.savedAt?'Saved '+ago(st.savedAt):'All changes saved'}
 function commit(){touched=true;checkAch();render();Kit.save(S)}
 let tT;function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>el.classList.remove('show'),2600)}
@@ -681,7 +681,7 @@ const ACH=[
 ];
 function checkAch(){if(!S.setup)return;const got=[];ACH.forEach(a=>{if(S.ach[a.id])return;let ok=false;try{ok=a.t()}catch(e){}if(ok){S.ach[a.id]=dkey(new Date());got.push(a.n)}});
  if(got.length)setTimeout(()=>{toast(got.length===1?'Milestone unlocked · '+got[0]:got.length+' milestones unlocked');celebrate(null,true)},750)}
-function countUp(){if(reducedMotion())return;document.querySelectorAll('[data-count]').forEach(el=>{const to=+el.dataset.count;if(!(to>1))return;const t0=performance.now(),d=750;const step=t=>{const k=Math.min(1,(t-t0)/d);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step)};el.textContent='0';requestAnimationFrame(step)})}
+function countUp(){if(reducedMotion())return;document.querySelectorAll('[data-count]').forEach(el=>{const to=+el.dataset.count;if(!(to>1))return;const t0=window.performance.now(),d=750;const step=t=>{const k=Math.min(1,(t-t0)/d);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step)};el.textContent='0';requestAnimationFrame(step)})}
 
 /* ================= POMODORO ================= */
 function pp(){if(!S.pomo)S.pomo={dur:25,brk:5,goal:4,sound:true};return S.pomo}
